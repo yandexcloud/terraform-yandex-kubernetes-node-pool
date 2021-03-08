@@ -1,0 +1,92 @@
+files:
+- path: /run/config/ssh/id_rsa
+  mode: 0400
+  text: |
+    ${private_key}
+- path: /run/config/ssh/id_rsa.pub
+  mode: 0400
+  text: |
+    ${public_key}
+- path: /var/lib/cni/net.d/10-default.conflist
+  text: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "default",
+      "plugins": [
+        {
+          "type": "bridge",
+          "bridge": "cni0",
+          "isDefaultGateway": true,
+          "ipMasq": true,
+          "hairpinMode": true,
+          "ipam": {
+            "type": "host-local",
+            "subnet": "${pod_cidr}",
+            "gateway": "${pod_gateway}"
+          },
+          "dns": {
+            "nameservers": ["${pod_gateway}"]
+          }
+        },
+        {
+          "type": "portmap",
+          "capabilities": {
+            "portMappings": true
+          },
+          "snat": true
+        }
+      ]
+    }
+- path: /var/lib/cni/net.d/99-loopback.conf
+  text: |
+    {
+      "cniVersion": "0.2.0",
+      "type": "loopback"
+    }
+- path: /run/config/kubeadm/join.yaml
+  text: |
+    # https://godoc.org/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta2#JoinConfiguration
+    apiVersion: kubeadm.k8s.io/v1beta2
+    kind: JoinConfiguration
+    nodeRegistration:
+      criSocket: /run/containerd/containerd.sock
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: ${control_plane_endpoint}:6443
+        token: $${token}
+        caCertHashes:
+        - $${ca_cert_hash}
+- path: /run/config/kubelet/kubelet.yaml
+  text: |
+    # https://godoc.org/k8s.io/kubelet/config/v1beta1#KubeletConfiguration
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    staticPodPath: /etc/kubernetes/manifests
+    clusterDNS:
+    - "${cluster_dns}"
+    clusterDomain: "cluster.local"
+    cgroupsPerQOS: false
+    kubeReservedCgroup: "podruntime"
+    systemReservedCgroup: "systemreserved"
+    cgroupRoot: "kubepods"
+    enforceNodeAllocatable: []
+    authentication:
+      anonymous:
+        enabled: false
+      webhook:
+        cacheTTL: 0s
+        enabled: true
+      x509:
+        clientCAFile: /etc/kubernetes/pki/ca.crt
+    authorization:
+      mode: Webhook
+      webhook:
+        cacheAuthorizedTTL: 0s
+        cacheUnauthorizedTTL: 0s
+- path: /run/config/kubernetes
+  text: |
+    FOLDER=${folder}
+    GROUP=${group}
+- path: /run/config/kubelet/args
+  text: |
+    --node-labels=${labels}
