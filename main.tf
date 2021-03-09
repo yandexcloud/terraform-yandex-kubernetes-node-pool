@@ -16,6 +16,7 @@ resource "yandex_compute_instance_group" "nodepool" {
     hostname           = "${var.name}-{instance.index}"
     platform_id        = var.platform_id
     service_account_id = var.sa
+    labels             = var.labels
 
     resources {
       cores         = var.cores
@@ -44,6 +45,7 @@ resource "yandex_compute_instance_group" "nodepool" {
     network_interface {
       subnet_ids = var.subnet_ids
     }
+
 
     metadata = {
       ssh-keys           = join("\n", var.ssh_keys)

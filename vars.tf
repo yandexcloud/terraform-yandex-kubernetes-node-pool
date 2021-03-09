@@ -84,11 +84,8 @@ variable "preemptible" {
 }
 
 variable "labels" {
-  type = list(object({
-    key   = string
-    value = string
-  }))
-  default     = []
+  type        = map
+  default     = {}
   description = "Node labels."
 }
 
