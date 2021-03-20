@@ -35,19 +35,19 @@ resource "yandex_compute_instance_group" "nodepool" {
 
     secondary_disk {
       mode        = "READ_WRITE"
-      device_name = "ceph"
+      device_name = "data"
       initialize_params {
-        size = var.raw_disk_size
-        type = var.raw_disk_type
+        size = var.data_disk_size
+        type = var.data_disk_type
       }
     }
 
     secondary_disk {
       mode        = "READ_WRITE"
-      device_name = "data"
+      device_name = "ceph"
       initialize_params {
-        size = var.data_disk_size
-        type = var.data_disk_type
+        size = var.raw_disk_size
+        type = var.raw_disk_type
       }
     }
 
