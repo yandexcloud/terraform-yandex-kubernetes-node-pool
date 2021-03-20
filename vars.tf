@@ -58,6 +58,16 @@ variable "data_disk_type" {
   description = "Data disk type of pool's nodes."
 }
 
+variable "raw_disk_size" {
+  default     = 10
+  description = "Raw disk size of pool's nodes."
+}
+
+variable "raw_disk_type" {
+  default     = "network-ssd"
+  description = "Raw disk type of pool's nodes."
+}
+
 variable "subnet_ids" {
   type        = list(string)
   description = "List of subnet ids to attach pool's nodes to."
