@@ -42,15 +42,6 @@ resource "yandex_compute_instance_group" "nodepool" {
       }
     }
 
-    secondary_disk {
-      mode        = "READ_WRITE"
-      device_name = "ceph"
-      initialize_params {
-        size = var.raw_disk_size
-        type = var.raw_disk_type
-      }
-    }
-
     network_interface {
       subnet_ids = var.subnet_ids
     }
