@@ -89,4 +89,4 @@ files:
     GROUP=${group}
 - path: /run/config/kubelet/args
   text: |
-    --node-labels=${labels} --allow-privileged --feature-gates=VolumeSnapshotDataSource=true,KubeletPluginsWatcher=true,CSINodeInfo=true,CSIDriverRegistry=true
+    --node-labels=${labels} --feature-gates=VolumeSnapshotDataSource=true,KubeletPluginsWatcher=true,CSINodeInfo=true,CSIDriverRegistry=true
